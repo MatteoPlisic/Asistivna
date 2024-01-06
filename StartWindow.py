@@ -6,16 +6,30 @@ import time
 class StartWindow:
     # Define fonts and colors
     root_color = "#2eb4c6"
-    label_font = ("Helvetica", 16)
+    label_font = ("Helvetica", 16, "roman")
     start_button_color = "#49f86d"
     start_button_color_hover = "#02cf2c"
     choose_level_button_color = "#ee484c" 
     choose_level_button_color_hover = "#f2050b" 
+    button_font = ("Comic Sans MS", 14, "roman bold")
+
+    # define sizes
+    root_width = 800
+    root_height = 650
+    button_width = 30
+    button_height = 7
 
     def __init__(self, root):
         self.root = root
         self.root.title("Igra memory")
-        root.geometry("800x600")
+
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+
+        x = (screen_width - self.root_width) // 2
+        y = (screen_height - self.root_height) // 2
+        root.geometry(f"{self.root_width}x{self.root_height}+{x}+{y}")
+
         icon_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "icon.ico")
         self.root.iconbitmap(icon_path)
 
@@ -23,8 +37,8 @@ class StartWindow:
 
         # Create labels and buttons
         label = tk.Label(root, text="Dobrodošli u igru memory!", font=self.label_font, bg=self.root_color)
-        start_button = tk.Button(root, text="Započni igru", command=self.start_game, bg=self.start_button_color, width=40, height=10)
-        choose_level_button = tk.Button(root, text="Odaberi nivo", command=self.choose_level, bg=self.choose_level_button_color, width=40, height=10)
+        start_button = tk.Button(root, text="Započni igru", command=self.start_game, font=self.button_font, bg=self.start_button_color, width=self.button_width, height=self.button_height)
+        choose_level_button = tk.Button(root, text="Odaberi nivo", command=self.choose_level, font=self.button_font, bg=self.choose_level_button_color, width=self.button_width, height=self.button_height)
 
         # Bind mouse events
         start_button.bind("<Enter>", lambda event, button=start_button: self.on_button_hover(event, button))
@@ -44,9 +58,8 @@ class StartWindow:
 
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()
-        blank_window = BlankWindow(root, title="Blank Window", width=500, height=400)
+        blank_window = BlankWindow(root, title="Blank Window", width=self.root_width, height=self.root_height)
         root.mainloop()  # Start the main loop for the new Tk instance
-        print("Starting the game!")
 
     def choose_level(self):
         print("Choose level")
