@@ -20,14 +20,24 @@ class MemoryGame:
         for i in range(rows):
             for j in range(columns):
                 btn = tk.Button(master, width=15, height=10, relief=tk.FLAT, command=lambda i=i, j=j: self.on_click(i, j))
-                btn.grid(row=i, column=j, padx=2, pady=2)  # Dodano postavljanje razmaka između gumba
+                btn.grid(row=i, column=j, padx=2, pady=2, sticky="nsew")  # Dodano postavljanje razmaka između gumba
                 self.buttons.append(btn)
+
+    def Resize_Image(self, image, maxsize):
+        r1 = image.size[0] / maxsize[0]  # width ratio
+        r2 = image.size[1] / maxsize[1]  # height ratio
+        ratio = max(r1, r2)
+        #newsize = (int(image.size[0] / ratio), int(image.size[1] / ratio))
+        #image = image.resize(newsize, Image.LANCZOS)
+        image = image.resize((maxsize), Image.LANCZOS)
+        return image
 
     def load_images(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_dir = os.path.join(current_dir, "images")
         image_files = ["image_1.jpg", "image_2.jpg", "image_3.jpg", "image_4.jpg", "image_5.jpg", "image_6.jpg", "image_7.jpg", "image_8.jpg"]
-        images = [ImageTk.PhotoImage(Image.open(os.path.join(image_dir, file)).resize((15, 10))) for file in image_files]
+        
+        images = [ImageTk.PhotoImage(self.Resize_Image(Image.open(os.path.join(image_dir, file)), (115, 160))) for file in image_files]
         return images
 
     def create_board(self):
