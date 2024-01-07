@@ -5,6 +5,8 @@ import random
 import os
 
 class MemoryGame:
+    image_height = 152
+    image_width = 109
     def __init__(self, master, rows, columns):
         self.master = master
         self.rows = rows
@@ -12,15 +14,25 @@ class MemoryGame:
         self.buttons = []
         self.images = self.load_images()
         self.board = self.create_board()
+        print(self.board)
         self.revealed = [[False] * columns for _ in range(rows)]
         self.first_click = None
         self.second_click = None
         self.allow_click = True
 
+        self.row_labels = [tk.Label(master, bg="green") for _ in range(rows)]
+
+        self.button_height_without_image = 10
+        self.button_width_without_image = 15
+        
+        
+
         for i in range(rows):
+            self.row_labels[i].grid(row=i, column=0, padx=2, pady=2, sticky="nsew")
+
             for j in range(columns):
-                btn = tk.Button(master, width=15, height=10, relief=tk.FLAT, command=lambda i=i, j=j: self.on_click(i, j))
-                btn.grid(row=i, column=j, padx=2, pady=2, sticky="nsew")  # Dodano postavljanje razmaka između gumba
+                btn = tk.Button(self.row_labels[i], width=self.button_width_without_image, height=self.button_height_without_image, relief=tk.FLAT, command=lambda i=i, j=j: self.on_click(i, j))
+                btn.grid(row=0, column=j, padx=2, pady=2, sticky="nsew")  # Dodano postavljanje razmaka između gumba
                 self.buttons.append(btn)
 
     def Resize_Image(self, image, maxsize):
@@ -37,7 +49,7 @@ class MemoryGame:
         image_dir = os.path.join(current_dir, "images")
         image_files = ["image_1.jpg", "image_2.jpg", "image_3.jpg", "image_4.jpg", "image_5.jpg", "image_6.jpg", "image_7.jpg", "image_8.jpg"]
         
-        images = [ImageTk.PhotoImage(self.Resize_Image(Image.open(os.path.join(image_dir, file)), (115, 160))) for file in image_files]
+        images = [ImageTk.PhotoImage(self.Resize_Image(Image.open(os.path.join(image_dir, file)), (self.image_width, self.image_height))) for file in image_files]
         return images
 
     def create_board(self):
@@ -48,7 +60,7 @@ class MemoryGame:
     def on_click(self, row, col):
         if not self.revealed[row][col] and self.allow_click:
             self.revealed[row][col] = True
-            self.buttons[row * self.columns + col].config(image=self.images[self.board[row][col]])
+            self.buttons[row * self.columns + col].config(image=self.images[self.board[row][col]], width=self.image_width, height=self.image_height)
 
             if self.first_click is None:
                 self.first_click = (row, col)
@@ -79,8 +91,8 @@ class MemoryGame:
         self.revealed[row1][col1] = False
         self.revealed[row2][col2] = False
 
-        self.buttons[row1 * self.columns + col1].config(image="")
-        self.buttons[row2 * self.columns + col2].config(image="")
+        self.buttons[row1 * self.columns + col1].config(image="", width=self.button_width_without_image, height=self.button_height_without_image)
+        self.buttons[row2 * self.columns + col2].config(image="", width=self.button_width_without_image, height=self.button_height_without_image)
 
     def is_game_over(self):
         for row in self.revealed:
