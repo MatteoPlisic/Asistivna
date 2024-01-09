@@ -19,7 +19,7 @@ class StartWindow:
 
     # define sizes
     root_width = 800
-    root_height = 650
+    root_height = 700
     button_width = 30
     button_height = 7
 
@@ -62,7 +62,7 @@ class StartWindow:
 
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()
-        root.config(bg="green")
+        root.config(bg=self.root_color)
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
 

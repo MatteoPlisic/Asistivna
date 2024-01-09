@@ -22,15 +22,18 @@ class GameWindow:
         self.second_click = None
         self.allow_click = True
         master.title(title)
-        self.row_labels = [tk.Label(master, bg="green") for _ in range(rows)]
+        #self.row_labels = [tk.Label(master, bg="green") for _ in range(rows)]
+        self.row_labels = [tk.Label(master, bg=master.cget("background")) for _ in range(rows)]
 
         self.button_height_without_image = 10
         self.button_width_without_image = 15
-        
-        
+
+        py = 30
+        self.ys = [py, py + self.image_height, py + 2*self.image_height, py + 3*self.image_height]
 
         for i in range(rows):
-            self.row_labels[i].grid(row=i, column=0, padx=2, pady=2, sticky="nsew")
+            #self.row_labels[i].grid(row=i, column=0, padx=2, pady=2, sticky="nsew")
+            self.row_labels[i].place(x=175, y=self.ys[i])
 
             for j in range(columns):
                 btn = tk.Button(self.row_labels[i], width=self.button_width_without_image, height=self.button_height_without_image, relief=tk.FLAT, command=lambda i=i, j=j: self.on_click(i, j))
@@ -38,6 +41,11 @@ class GameWindow:
                 self.buttons.append(btn)
     
                 btn.bind("<Enter>", lambda event, button=btn, row=i, col=j: self.on_button_hover(event, button, row, col))
+
+                button_width = btn.winfo_reqwidth()
+                button_height = btn.winfo_reqheight()
+                print(f"Button {i}, {j} dimensions: {button_width} x {button_height}")
+
 
     def on_button_hover(self, event, button, row, col):
         global hover_start_time
