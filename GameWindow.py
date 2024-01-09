@@ -3,6 +3,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import random
 import os
+import time
 
 class GameWindow:
     image_height = 152
@@ -35,6 +36,41 @@ class GameWindow:
                 btn = tk.Button(self.row_labels[i], width=self.button_width_without_image, height=self.button_height_without_image, relief=tk.FLAT, command=lambda i=i, j=j: self.on_click(i, j))
                 btn.grid(row=0, column=j, padx=2, pady=2, sticky="nsew")  # Dodano postavljanje razmaka između gumba
                 self.buttons.append(btn)
+    
+                btn.bind("<Enter>", lambda event, button=btn, row=i, col=j: self.on_button_hover(event, button, row, col))
+
+    def on_button_hover(self, event, button, row, col):
+        global hover_start_time
+        hover_start_time = time.time()
+
+        self.check_hover(button, row, col)
+
+    def check_hover(self, button, row, col):
+        current_mouse_x = self.master.winfo_pointerx() - self.master.winfo_rootx()
+        current_mouse_y = self.master.winfo_pointery() - self.master.winfo_rooty()
+        
+        button_x = button.winfo_rootx() - self.master.winfo_rootx()
+        button_y = button.winfo_rooty() - self.master.winfo_rooty()
+
+        button_absolute_x = button.winfo_rootx() - self.master.winfo_rootx()
+        button_absolute_y = button.winfo_rooty() - self.master.winfo_rooty()
+
+        button_width = button.winfo_reqwidth()
+        button_height = button.winfo_reqheight()
+
+        if (
+            button_x <= current_mouse_x <= button_x + button_width and
+            button_y <= current_mouse_y <= button_y + button_height
+        ):
+            elapsed_time = time.time() - hover_start_time
+            if elapsed_time >= 1:  # 1 second
+                self.on_click(row, col)
+                return
+        else:
+            # Stop checking if the mouse is no longer over the button
+            return
+        
+        button.after(100, lambda: self.check_hover(button, row, col))  # Check every 100 milliseconds
 
     def Resize_Image(self, image, maxsize):
         r1 = image.size[0] / maxsize[0]  # width ratio
