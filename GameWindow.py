@@ -100,18 +100,3 @@ class GameWindow:
             if False in row:
                 return False
         return True
-
-def main():
-    root = tk.Tk()
-    root.title("Memory Game")
-
-    rows, columns = 4, 4
-    game = MemoryGame(root, rows, columns)
-
-    # Postavljanje pozadinske boje na zelenu
-    root.configure(bg="green")
-
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
