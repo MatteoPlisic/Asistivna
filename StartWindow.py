@@ -1,7 +1,11 @@
 import tkinter as tk
 from BlankWindow import BlankWindow
+
+from GameWindow import GameWindow
+
 import os
 import time
+
 
 class StartWindow:
     # Define fonts and colors
@@ -58,7 +62,9 @@ class StartWindow:
 
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()
-        blank_window = BlankWindow(root, title="Blank Window", width=self.root_width, height=self.root_height)
+
+        game_window = GameWindow(root, columns=4, rows=4,title = "Game window")
+
         root.mainloop()  # Start the main loop for the new Tk instance
 
     def choose_level(self):
