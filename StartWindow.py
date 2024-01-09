@@ -1,6 +1,6 @@
 import tkinter as tk
 from BlankWindow import BlankWindow
-
+from GameWindow import GameWindow
 class StartWindow:
     def __init__(self, root):
         self.root = root
@@ -22,7 +22,7 @@ class StartWindow:
 
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()
-        blank_window = BlankWindow(root, title="Blank Window", width=500, height=400)
+        game_window = GameWindow(root, columns=4, rows=4,title = "Game window")
         root.mainloop()  # Start the main loop for the new Tk instance
         print("Starting the game!")
 

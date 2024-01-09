@@ -4,10 +4,11 @@ from PIL import Image, ImageTk
 import random
 import os
 
-class MemoryGame:
+class GameWindow:
     image_height = 152
     image_width = 109
-    def __init__(self, master, rows, columns):
+    def __init__(self, master, rows, columns,title):
+
         self.master = master
         self.rows = rows
         self.columns = columns
@@ -19,7 +20,7 @@ class MemoryGame:
         self.first_click = None
         self.second_click = None
         self.allow_click = True
-
+        master.title(title)
         self.row_labels = [tk.Label(master, bg="green") for _ in range(rows)]
 
         self.button_height_without_image = 10
