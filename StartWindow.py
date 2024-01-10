@@ -20,7 +20,7 @@ class StartWindow:
 
     # define sizes
     root_width = 800
-    root_height = 650
+    root_height = 700
     button_width = 30
     button_height = 7
 
@@ -64,8 +64,15 @@ class StartWindow:
 
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()
+        root.config(bg=self.root_color)
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
 
-        game_window = GameWindow(root, columns=2, rows=2,title = "Game window")
+        x = (screen_width - self.root_width) // 2
+        y = (screen_height - self.root_height) // 2
+        root.geometry(f"{self.root_width}x{self.root_height}+{x}+{y}")
+        
+        game_window = GameWindow(root, columns=2, rows=2, title = "Game window")
 
         root.mainloop()  # Start the main loop for the new Tk instance
 

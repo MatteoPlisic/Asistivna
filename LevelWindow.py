@@ -16,6 +16,11 @@ class LevelWindow:
     button_color = "#ee484c" 
     button_color_hover = "#f2050b" 
     window_color = "#2eb4c6"
+    root_color = "#2eb4c6"
+    
+    root_width = 800
+    root_height = 700
+    
     def __init__(self, master,title):
 
         self.master = master
@@ -38,6 +43,14 @@ class LevelWindow:
 
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()
+        root.config(bg=self.root_color)
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+
+        x = (screen_width - self.root_width) // 2
+        y = (screen_height - self.root_height) // 2
+        root.geometry(f"{self.root_width}x{self.root_height}+{x}+{y}")
+        
 
         game_window = GameWindow(root, columns=int(cols), rows=int(rows), title = "Game window")
 

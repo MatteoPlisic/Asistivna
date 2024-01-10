@@ -11,6 +11,8 @@ import numpy as np
 class GameWindow:
     image_height = 152
     image_width = 109
+    root_width = 800
+    root_height = 700
     cheatsheet2 = cheatsheet()
     button_font = ("Comic Sans MS", 12, "roman")
     button_color = "#ee484c"
@@ -37,23 +39,40 @@ class GameWindow:
         self.second_click = None
         self.allow_click = True
         master.title(title)
-        self.row_labels = [tk.Label(master, bg="green") for _ in range(rows)]
+        self.row_labels = [tk.Label(master, bg=master.cget("background")) for _ in range(rows)]
 
         self.button_height_without_image = 10
         self.button_width_without_image = 15
 
+
         self.level_sizes = [(2, 2), (3, 2), (4, 2), (3, 4), (4, 4)]
 
+
         for i in range(rows):
-            self.row_labels[i].grid(row=i, column=0, padx=2, pady=2, sticky="nsew")
+            #self.row_labels[i].grid(row=i, column=0, padx=2, pady=2, sticky="nsew")
+            self.row_labels[i].columnconfigure(0, weight=1)  # Make the column expand
 
             for j in range(columns):
-                btn = tk.Button(self.row_labels[i], width=self.button_width_without_image, height=self.button_height_without_image, relief=tk.FLAT, command=lambda i=i, j=j: self.on_click(i, j))
-                btn.grid(row=0, column=j, padx=2, pady=2, sticky="nsew")  # Dodano postavljanje razmaka između gumba
+                btn = tk.Button(self.row_labels[i], borderwidth=0, width=self.button_width_without_image, height=self.button_height_without_image, relief=tk.FLAT, command=lambda i=i, j=j: self.on_click(i, j))
+                btn.grid(row=0, column=j, padx=2, pady=2, ipadx=0, ipady=0,sticky="nsew")  # Dodano postavljanje razmaka između gumba
                 self.buttons.append(btn)
 
                 btn.bind("<Enter>", lambda event, button=btn, row=i, col=j: self.on_button_hover(event, button, row, col))
 
+                button_width = btn.winfo_reqwidth()
+                button_height = btn.winfo_reqheight()
+                print(f"Button {i}, {j} dimensions: {button_width} x {button_height}")
+
+        self.master.update_idletasks()  # Force update before querying size
+            
+        py = (self.root_height - rows*self.row_labels[1].winfo_reqheight())/2
+        px = (self.root_width - rows*self.image_width)/2
+        
+        self.ys = [py, py + self.row_labels[1].winfo_reqheight(), py + 2*self.row_labels[1].winfo_reqheight(), py + 3*self.row_labels[1].winfo_reqheight()]
+
+        for i in range(rows):
+            self.row_labels[i].place(x=(self.root_width - self.row_labels[1].winfo_reqwidth())/2, y=self.ys[i])
+        
     def on_button_hover(self, event, button, row, col):
         global hover_start_time
         hover_start_time = time.time()
@@ -132,10 +151,12 @@ class GameWindow:
                 image = Image.open(file_path)
                 self.odgovori.append(filename)
                 imagetmp.append(image.resize((109,152)))
+                #imagetmp.append(self.Resize_Image(image, (119, 162)))
                 file_path = os.path.join("pitanja", filename)
                 image = Image.open(file_path)
                 self.pitanja.append(filename)
                 imagetmp.append(image.resize((109,152)))
+                #imagetmp.append(self.Resize_Image(image, (119, 162)))
                 
             images.append(imagetmp)
         ##images[1][1].show()
