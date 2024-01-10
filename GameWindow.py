@@ -20,13 +20,18 @@ class GameWindow:
     def __init__(self, master, rows, columns,title):
 
         self.master = master
+        if columns % 2 == 1:
+            rows,columns = columns,rows
         self.rows = rows
         self.columns = columns
+
+
         self.buttons = []
         self.pitanja = []
         self.odgovori = []
         self.images = self.load_images()
         self.board = self.create_board()
+
         self.revealed = [[False] * columns for _ in range(rows)]
         self.first_click = None
         self.second_click = None
@@ -114,10 +119,10 @@ class GameWindow:
         dupli_indexi = []
 
         images= []
+
         for i in range(self.rows):
             imagetmp = []
             for j in range(self.columns//2):
-
                 random_broj = np.random.randint(1,100)
                 while(dupli_indexi.__contains__(random_broj)):
                     random_broj = np.random.randint(1,100)
@@ -133,7 +138,7 @@ class GameWindow:
                 imagetmp.append(image.resize((109,152)))
                 
             images.append(imagetmp)
-        images[1][1].show()
+        ##images[1][1].show()
         print(self.rows,self.columns)
 
         flattened_images = [image for row in images for image in row]
@@ -197,10 +202,15 @@ class GameWindow:
         odgovor = odgovor[:-4]
         pitanje = pitanje[:-4]
         found = False
-        if pitanje:
+        if pitanje != "" and odgovor != "":
+            file_path = "odgovori/"
+            tocni_odgovor =   Image.open(file_path+odgovor+".jpg")
             for i in self.cheatsheet2[int(pitanje)]:
-                
-                if odgovor != "" and int(i) == int(odgovor):
+
+
+                if int(i) == int(odgovor):
+                    print(i,odgovor)
+
                     found = True
                     if self.is_game_over():
                         index = self.level_sizes.index((self.rows, self.columns))
@@ -219,7 +229,20 @@ class GameWindow:
 
 
                         self.master.quit()
-        
+
+                else:
+                    try:
+                        if tocni_odgovor == Image.open(file_path+str(i)+".jpg"):
+                            found = True
+                            print(pitanje,i)
+                            if self.is_game_over():
+                                messagebox.showinfo("Memory Game", "Congratulations! You won!")
+                                self.master.quit()
+                    except:
+                        print("error")
+                        continue
+
+
         if not found:
             self.cover_tiles()
 
