@@ -117,7 +117,6 @@ class GameWindow:
         for i in range(self.rows):
             imagetmp = []
             for j in range(self.columns//2):
-
                 random_broj = np.random.randint(1,100)
                 while(dupli_indexi.__contains__(random_broj)):
                     random_broj = np.random.randint(1,100)
@@ -197,22 +196,28 @@ class GameWindow:
         odgovor = odgovor[:-4]
         pitanje = pitanje[:-4]
         found = False
-        if pitanje:
+        if pitanje != "" and odgovor != "":
             file_path = "odgovori/"
-            tocni_odgovor =   Image.open(file_path+pitanje+".jpg")
+            tocni_odgovor =   Image.open(file_path+odgovor+".jpg")
             for i in self.cheatsheet2[int(pitanje)]:
 
-                if odgovor != "" and int(i) == int(odgovor):
+                if int(i) == int(odgovor):
+                    print(i,odgovor)
                     found = True
                     if self.is_game_over():
                         messagebox.showinfo("Memory Game", "Congratulations! You won!")
                         self.master.quit()
                 else:
-                    if tocni_odgovor == Image.open(file_path+i+".jpg"):
-                        found = True
-                        if self.is_game_over():
-                            messagebox.showinfo("Memory Game", "Congratulations! You won!")
-                            self.master.quit()
+                    try:
+                        if tocni_odgovor == Image.open(file_path+str(i)+".jpg"):
+                            found = True
+                            print(pitanje,i)
+                            if self.is_game_over():
+                                messagebox.showinfo("Memory Game", "Congratulations! You won!")
+                                self.master.quit()
+                    except:
+                        print("error")
+                        continue
 
         if not found:
             self.cover_tiles()
