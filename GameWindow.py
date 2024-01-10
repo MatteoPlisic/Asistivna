@@ -16,6 +16,7 @@ class GameWindow:
     cheatsheet2 = cheatsheet()
     button_font = ("Comic Sans MS", 12, "roman")
     button_color = "#ee484c"
+    root_color = "#2eb4c6"
     button_width = 15
     button_height = 3
 
@@ -307,7 +308,14 @@ class GameWindow:
 
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()
+        root.config(bg=self.root_color)
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
 
+        x = (screen_width - self.root_width) // 2
+        y = (screen_height - self.root_height) // 2
+        root.geometry(f"{self.root_width}x{self.root_height}+{x}+{y}")
+        
         game_window = GameWindow(root, columns=int(cols), rows=int(rows), title = "Game window")
 
         root.mainloop()  # Start the main loop for the new Tk instance
