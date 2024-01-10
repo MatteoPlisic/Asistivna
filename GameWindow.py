@@ -136,7 +136,7 @@ class GameWindow:
                 imagetmp.append(image.resize((109,152)))
                 
             images.append(imagetmp)
-        images[1][1].show()
+        ##images[1][1].show()
         print(self.rows,self.columns)
 
         flattened_images = [image for row in images for image in row]
