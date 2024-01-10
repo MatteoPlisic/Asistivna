@@ -72,7 +72,7 @@ class StartWindow:
         y = (screen_height - self.root_height) // 2
         root.geometry(f"{self.root_width}x{self.root_height}+{x}+{y}")
         
-        game_window = GameWindow(root, columns=4, rows=4, title = "Game window")
+        game_window = GameWindow(root, columns=2, rows=2, title = "Game window")
 
         root.mainloop()  # Start the main loop for the new Tk instance
 
