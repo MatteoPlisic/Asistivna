@@ -198,10 +198,11 @@ class GameWindow:
         found = False
         if pitanje != "" and odgovor != "":
             file_path = "odgovori/"
-            tocni_odgovor =   Image.open(file_path+pitanje+".jpg")
+            tocni_odgovor =   Image.open(file_path+odgovor+".jpg")
             for i in self.cheatsheet2[int(pitanje)]:
 
-                if odgovor != "" and int(i) == int(odgovor):
+                if int(i) == int(odgovor):
+                    print(i,odgovor)
                     found = True
                     if self.is_game_over():
                         messagebox.showinfo("Memory Game", "Congratulations! You won!")
