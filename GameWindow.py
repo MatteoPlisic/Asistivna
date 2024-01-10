@@ -6,10 +6,16 @@ import os
 import time
 from cheatsheet import cheatsheet
 import numpy as np
+#from StartWindow import StartWindow
+
 class GameWindow:
     image_height = 152
     image_width = 109
     cheatsheet2 = cheatsheet()
+    button_font = ("Comic Sans MS", 12, "roman")
+    button_color = "#ee484c"
+    button_width = 15
+    button_height = 3
 
     def __init__(self, master, rows, columns,title):
 
@@ -36,7 +42,7 @@ class GameWindow:
         self.button_height_without_image = 10
         self.button_width_without_image = 15
 
-
+        self.level_sizes = [(2, 2), (3, 2), (4, 2), (3, 4), (4, 4)]
 
         for i in range(rows):
             self.row_labels[i].grid(row=i, column=0, padx=2, pady=2, sticky="nsew")
@@ -201,12 +207,29 @@ class GameWindow:
             tocni_odgovor =   Image.open(file_path+odgovor+".jpg")
             for i in self.cheatsheet2[int(pitanje)]:
 
+
                 if int(i) == int(odgovor):
                     print(i,odgovor)
+
                     found = True
                     if self.is_game_over():
-                        messagebox.showinfo("Memory Game", "Congratulations! You won!")
+                        index = self.level_sizes.index((self.rows, self.columns))
+                        print("index=", index)
+                        if index == len(self.level_sizes) - 1:
+                            main_menu_button = tk.Button(self.master, text=f"Povratak na izbornik", command=self.return_to_menu, font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
+                            main_menu_button.grid(row=0, column=1, padx=10, sticky="w")
+                            main_menu_button.bind("<Enter>", lambda event, button=main_menu_button, rows=4, cols=3: self.on_button_hover(event, button, rows, cols))
+                            main_menu_button.bind("<Leave>", lambda event: main_menu_button.config(bg=self.button_color))
+                        else: 
+                            r, c = self.level_sizes[index + 1]
+                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=r, cols=c: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
+                            next_level_button.grid(row=0, column=1, padx=10, sticky="w")
+                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=r, cols=c: self.on_button_hover(event, button, rows, cols))
+                            next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
+
+
                         self.master.quit()
+
                 else:
                     try:
                         if tocni_odgovor == Image.open(file_path+str(i)+".jpg"):
@@ -218,6 +241,7 @@ class GameWindow:
                     except:
                         print("error")
                         continue
+
 
         if not found:
             self.cover_tiles()
@@ -232,6 +256,12 @@ class GameWindow:
         self.first_click = None
         self.second_click = None
         self.allow_click = True  # Omoguci klikanje nakon zavrsene provjere
+
+    def return_to_menu(self):
+        from StartWindow import StartWindow  # Import unutar funkcije
+        for widget in self.master.winfo_children():
+            widget.destroy()    
+        StartWindow(self.master)
 
     def cover_tiles(self):
         row1, col1 = self.first_click
@@ -248,3 +278,15 @@ class GameWindow:
             if False in row:
                 return False
         return True
+    
+    def start_game(self, rows, cols):
+        # Destroy the current window (StartWindow)
+        self.master.destroy()
+        print(rows, cols)
+
+        # Create an instance of the BlankWindow class as a Toplevel window
+        root = tk.Tk()
+
+        game_window = GameWindow(root, columns=int(cols), rows=int(rows), title = "Game window")
+
+        root.mainloop()  # Start the main loop for the new Tk instance
