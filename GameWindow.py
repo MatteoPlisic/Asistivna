@@ -4,19 +4,24 @@ from PIL import Image, ImageTk
 import random
 import os
 import time
-
+from cheatsheet import cheatsheet
+import numpy as np
 class GameWindow:
     image_height = 152
     image_width = 109
+    cheatsheet2 = cheatsheet()
+
     def __init__(self, master, rows, columns,title):
 
         self.master = master
         self.rows = rows
         self.columns = columns
         self.buttons = []
+        self.pitanja = []
+        self.odgovori = []
         self.images = self.load_images()
         self.board = self.create_board()
-        print(self.board)
+        print(self.board,"penis")
         self.revealed = [[False] * columns for _ in range(rows)]
         self.first_click = None
         self.second_click = None
@@ -39,7 +44,7 @@ class GameWindow:
                 btn = tk.Button(self.row_labels[i], width=self.button_width_without_image, height=self.button_height_without_image, relief=tk.FLAT, command=lambda i=i, j=j: self.on_click(i, j))
                 btn.grid(row=0, column=j, padx=2, pady=2, sticky="nsew")  # Dodano postavljanje razmaka između gumba
                 self.buttons.append(btn)
-    
+
                 btn.bind("<Enter>", lambda event, button=btn, row=i, col=j: self.on_button_hover(event, button, row, col))
 
                 button_width = btn.winfo_reqwidth()
@@ -56,7 +61,7 @@ class GameWindow:
     def check_hover(self, button, row, col):
         current_mouse_x = self.master.winfo_pointerx() - self.master.winfo_rootx()
         current_mouse_y = self.master.winfo_pointery() - self.master.winfo_rooty()
-        
+
         button_x = button.winfo_rootx() - self.master.winfo_rootx()
         button_y = button.winfo_rooty() - self.master.winfo_rooty()
 
@@ -77,7 +82,7 @@ class GameWindow:
         else:
             # Stop checking if the mouse is no longer over the button
             return
-        
+
         button.after(100, lambda: self.check_hover(button, row, col))  # Check every 100 milliseconds
 
     def Resize_Image(self, image, maxsize):
@@ -93,19 +98,71 @@ class GameWindow:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_dir = os.path.join(current_dir, "images")
         image_files = ["image_1.jpg", "image_2.jpg", "image_3.jpg", "image_4.jpg", "image_5.jpg", "image_6.jpg", "image_7.jpg", "image_8.jpg"]
-        
-        images = [ImageTk.PhotoImage(self.Resize_Image(Image.open(os.path.join(image_dir, file)), (self.image_width, self.image_height))) for file in image_files]
+
+        images_pitanja = []
+        for i in range(1, 101):
+            filename = f"{i}.jpg"
+            file_path = os.path.join("pitanja", filename)
+            if os.path.exists(file_path):
+                image = Image.open(file_path)
+                images_pitanja.append(image)
+        images_odgovori = []
+        for i in range(1, 101):
+            filename = f"{i}.jpg"
+            file_path = os.path.join("odgovori", filename)
+            if os.path.exists(file_path):
+                image = Image.open(file_path)
+                images_odgovori.append(image)
+
+        dupli_indexi = []
+
+        images= []
+        for i in range(self.rows):
+            imagetmp = []
+            for j in range(self.columns//2):
+
+                random_broj = np.random.randint(1,100)
+                while(dupli_indexi.__contains__(random_broj)):
+                    random_broj = np.random.randint(1,100)
+                dupli_indexi.append(random_broj)
+                filename = f"{random_broj}.jpg"
+                file_path = os.path.join("odgovori", filename)
+                image = Image.open(file_path)
+                self.odgovori.append(filename)
+                imagetmp.append(image.resize((109,152)))
+                file_path = os.path.join("pitanja", filename)
+                image = Image.open(file_path)
+                self.pitanja.append(filename)
+                imagetmp.append(image.resize((109,152)))
+                
+            images.append(imagetmp)
+        images[1][1].show()
+        print(self.rows,self.columns)
+
+        flattened_images = [image for row in images for image in row]
+
+        # Shuffle the flattened list
+        np.random.shuffle(flattened_images)
+
+        # Reshape the shuffled list back into a 2D array
+        images = [flattened_images[i:i + len(images[0])] for i in
+                              range(0, len(flattened_images), len(images[0]))]
+
+       # images = [ImageTk.PhotoImage(self.Resize_Image(Image.open(os.path.join(image_dir, file)), (self.image_width, self.image_height))) for file in image_files]
         return images
 
     def create_board(self):
         image_indices = list(range(0, (self.rows * self.columns) // 2)) * 2
         random.shuffle(image_indices)
-        return [image_indices[i:i+self.columns] for i in range(0, len(image_indices), self.columns)]
+        return [image_indices[i:i + self.columns] for i in range(0, len(image_indices), self.columns)]
 
     def on_click(self, row, col):
         if not self.revealed[row][col] and self.allow_click:
             self.revealed[row][col] = True
-            self.buttons[row * self.columns + col].config(image=self.images[self.board[row][col]], width=self.image_width, height=self.image_height)
+            tk_image = ImageTk.PhotoImage(self.images[row][col])
+            print(self.images[row][col])
+            self.buttons[row * self.columns + col].config(image=tk_image,height=tk_image.height(),width=tk_image.width())
+            self.buttons[row * self.columns + col].image = tk_image
 
             if self.first_click is None:
                 self.first_click = (row, col)
@@ -113,17 +170,53 @@ class GameWindow:
                 self.second_click = (row, col)
                 self.allow_click = False  # Onemoguci klikanje
                 self.master.after(1000, self.check_match)
-                
+
     def check_match(self):
         row1, col1 = self.first_click
         row2, col2 = self.second_click
+        image1 = self.images[row1][col1]
+        image2 = self.images[row2][col2]
 
-        if self.board[row1][col1] == self.board[row2][col2]:
-            if self.is_game_over():
-                messagebox.showinfo("Memory Game", "Congratulations! You won!")
-                self.master.quit()
-        else:
+        pitanje = ""
+        odgovor = ""
+        folder_path = 'pitanja'
+        for filename in self.pitanja:
+            file_path = os.path.join(folder_path, filename)
+            y = Image.open(file_path).resize((109,152))
+            if image1 == y:
+                pitanje = filename
+            if image2 == y:
+                pitanje = filename
+        folder_path = 'odgovori'
+        for filename in self.odgovori:
+            file_path = os.path.join(folder_path, filename)
+            y = Image.open(file_path).resize((109,152))
+            print(filename)
+            if image1 == y:
+                odgovor = filename
+            if image2 == y:
+                odgovor = filename
+
+        odgovor = odgovor[:-4]
+        pitanje = pitanje[:-4]
+        found = False
+        if pitanje:
+            for i in self.cheatsheet2[int(pitanje)]:
+
+                if odgovor != "" and int(i) == int(odgovor):
+                    found = True
+                    if self.is_game_over():
+                        messagebox.showinfo("Memory Game", "Congratulations! You won!")
+                        self.master.quit()
+        if not found:
             self.cover_tiles()
+
+        # if self.images[row1][col1] == self.images[row2][col2]:
+        #     if self.is_game_over():
+        #         messagebox.showinfo("Memory Game", "Congratulations! You won!")
+        #         self.master.quit()
+        # else:
+        #     self.cover_tiles()
 
         self.first_click = None
         self.second_click = None

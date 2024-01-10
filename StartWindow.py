@@ -1,4 +1,5 @@
 import tkinter as tk
+from LevelWindow import LevelWindow
 from BlankWindow import BlankWindow
 
 from GameWindow import GameWindow
@@ -26,6 +27,7 @@ class StartWindow:
     def __init__(self, root):
         self.root = root
         self.root.title("Igra memory")
+        self.should_create_level_window = True
 
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
@@ -75,7 +77,45 @@ class StartWindow:
         root.mainloop()  # Start the main loop for the new Tk instance
 
     def choose_level(self):
-        print("Choose level")
+        self.root.destroy()
+        # Check the flag before creating the level window
+        if self.should_create_level_window:
+            root = tk.Tk()
+            # Set the flag to False to prevent the small Tkinter window from appearing
+            self.should_create_level_window = False
+
+            # Create a new Toplevel window for level selection
+            level_window = LevelWindow(root,title = "Level window")
+
+            # Set the width and height of the level window
+            
+
+            # Add labels and buttons for level selection
+            #label = tk.Label(level_window, text="Odaberi nivo:", font=self.label_font, bg=self.root_color)
+            
+            # Assuming you want levels from 1 to 5
+            """for level in range(1, 6):
+                level_button = tk.Button(level_window, text=f"Nivo {level}", command=lambda l=level: self.start_game_with_level(l), font=self.button_font, bg=self.choose_level_button_color, width=15, height=3)
+                level_button.pack(side=tk.LEFT, padx=10)  # Pack buttons horizontally with some padding
+
+            # Pack widgets to the level_window
+            label.pack(pady=20)"""
+
+            root.mainloop()
+
+
+    def start_game_with_level(self, selected_level):
+        # Create an instance of the BlankWindow class as a Toplevel window
+        root = tk.Tk()
+
+        # Assuming you want to pass the selected level to the GameWindow
+        game_window = GameWindow(root, columns=4, rows=4, title=f"Game window - Level {selected_level}")
+
+        root.mainloop()  # Start the main loop for the new Tk instance
+
+        
+        
+        
 
     def on_button_hover(self, event, button):
         global hover_start_time
