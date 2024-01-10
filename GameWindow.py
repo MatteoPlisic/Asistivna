@@ -111,7 +111,7 @@ class GameWindow:
         images= []
         for i in range(self.rows):
             imagetmp = []
-            for j in range(self.columns):
+            for j in range(self.columns//2):
 
                 random_broj = np.random.randint(1,100)
                 while(dupli_indexi.__contains__(random_broj)):
@@ -126,10 +126,19 @@ class GameWindow:
                 image = Image.open(file_path)
                 self.pitanja.append(filename)
                 imagetmp.append(image.resize((109,152)))
-                j+= 1
+                
             images.append(imagetmp)
         images[1][1].show()
-        random.shuffle(images)
+        print(self.rows,self.columns)
+
+        flattened_images = [image for row in images for image in row]
+
+        # Shuffle the flattened list
+        np.random.shuffle(flattened_images)
+
+        # Reshape the shuffled list back into a 2D array
+        images = [flattened_images[i:i + len(images[0])] for i in
+                              range(0, len(flattened_images), len(images[0]))]
 
        # images = [ImageTk.PhotoImage(self.Resize_Image(Image.open(os.path.join(image_dir, file)), (self.image_width, self.image_height))) for file in image_files]
         return images
@@ -183,13 +192,14 @@ class GameWindow:
         odgovor = odgovor[:-4]
         pitanje = pitanje[:-4]
         found = False
-        for i in self.cheatsheet2[int(pitanje)]:
-            print(int(i) == int(odgovor))
-            if odgovor != "" and int(i) == int(odgovor):
-                found = True
-                if self.is_game_over():
-                    messagebox.showinfo("Memory Game", "Congratulations! You won!")
-                    self.master.quit()
+        if pitanje:
+            for i in self.cheatsheet2[int(pitanje)]:
+
+                if odgovor != "" and int(i) == int(odgovor):
+                    found = True
+                    if self.is_game_over():
+                        messagebox.showinfo("Memory Game", "Congratulations! You won!")
+                        self.master.quit()
         if not found:
             self.cover_tiles()
 
