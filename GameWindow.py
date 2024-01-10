@@ -6,6 +6,8 @@ import os
 import time
 from cheatsheet import cheatsheet
 import numpy as np
+#from StartWindow import StartWindow
+
 class GameWindow:
     image_height = 152
     image_width = 109
@@ -35,7 +37,7 @@ class GameWindow:
         self.button_height_without_image = 10
         self.button_width_without_image = 15
 
-
+        self.level_sizes = [(2, 2), (3, 2), (4, 2), (3, 4), (4, 4)]
 
         for i in range(rows):
             self.row_labels[i].grid(row=i, column=0, padx=2, pady=2, sticky="nsew")
@@ -197,34 +199,27 @@ class GameWindow:
         found = False
         if pitanje:
             for i in self.cheatsheet2[int(pitanje)]:
-
+                
                 if odgovor != "" and int(i) == int(odgovor):
                     found = True
                     if self.is_game_over():
-                        if(self.rows == 2 and self.columns == 2):
-                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=3, cols=2: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
+                        index = self.level_sizes.index((self.rows, self.columns))
+                        print("index=", index)
+                        if index == len(self.level_sizes) - 1:
+                            main_menu_button = tk.Button(self.master, text=f"Povratak na izbornik", command=self.return_to_menu, font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
+                            main_menu_button.grid(row=0, column=1, padx=10, sticky="w")
+                            main_menu_button.bind("<Enter>", lambda event, button=main_menu_button, rows=4, cols=3: self.on_button_hover(event, button, rows, cols))
+                            main_menu_button.bind("<Leave>", lambda event: main_menu_button.config(bg=self.button_color))
+                        else: 
+                            r, c = self.level_sizes[index + 1]
+                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=r, cols=c: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
                             next_level_button.grid(row=0, column=1, padx=10, sticky="w")
-                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=3, cols=2: self.on_button_hover(event, button, rows, cols))
+                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=r, cols=c: self.on_button_hover(event, button, rows, cols))
                             next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
-                        elif(self.rows == 3 and self.columns == 2):
-                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=4, cols=2: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
-                            next_level_button.grid(row=0, column=1, padx=10, sticky="w")
-                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=4, cols=2: self.on_button_hover(event, button, rows, cols))
-                            next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
-                        elif(self.rows == 4 and self.columns == 2):
-                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=4, cols=3: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
-                            next_level_button.grid(row=0, column=1, padx=10, sticky="w")
-                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=4, cols=3: self.on_button_hover(event, button, rows, cols))
-                            next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
-                        elif(self.rows == 4 and self.columns == 3):
-                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=4, cols=4: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
-                            next_level_button.grid(row=0, column=1, padx=10, sticky="w")
-                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=4, cols=4: self.on_button_hover(event, button, rows, cols))
-                            next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
-                        elif(self.rows == 4 and self.columns == 4):
-                            messagebox.showinfo("Bravo!")
+
 
                         self.master.quit()
+        
         if not found:
             self.cover_tiles()
 
@@ -238,6 +233,12 @@ class GameWindow:
         self.first_click = None
         self.second_click = None
         self.allow_click = True  # Omoguci klikanje nakon zavrsene provjere
+
+    def return_to_menu(self):
+        from StartWindow import StartWindow  # Import unutar funkcije
+        for widget in self.master.winfo_children():
+            widget.destroy()    
+        StartWindow(self.master)
 
     def cover_tiles(self):
         row1, col1 = self.first_click

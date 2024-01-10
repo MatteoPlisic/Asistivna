@@ -22,7 +22,7 @@ class LevelWindow:
         master.geometry("920x600")
         master.title(title)
         master.config(bg=self.window_color)
-        polje = ["2x2", "3x2", "4x2", "4x3", "4x4"]
+        polje = ["2x2", "3x2", "4x2", "3x4", "4x4"]
         for i in range(0, 5):
             rows, cols = polje[i].split("x")
             level_button = tk.Button(master, text=f"Level {polje[i]}", command = lambda rows = rows, cols = cols: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
