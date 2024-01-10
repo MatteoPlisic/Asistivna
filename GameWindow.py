@@ -14,14 +14,18 @@ class GameWindow:
     def __init__(self, master, rows, columns,title):
 
         self.master = master
+        if columns % 2 == 1:
+            rows,columns = columns,rows
         self.rows = rows
         self.columns = columns
+
+
         self.buttons = []
         self.pitanja = []
         self.odgovori = []
         self.images = self.load_images()
         self.board = self.create_board()
-        print(self.board,"penis")
+
         self.revealed = [[False] * columns for _ in range(rows)]
         self.first_click = None
         self.second_click = None
@@ -109,6 +113,7 @@ class GameWindow:
         dupli_indexi = []
 
         images= []
+
         for i in range(self.rows):
             imagetmp = []
             for j in range(self.columns//2):
