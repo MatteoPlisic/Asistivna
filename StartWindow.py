@@ -65,7 +65,7 @@ class StartWindow:
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()
 
-        game_window = GameWindow(root, columns=4, rows=4,title = "Game window")
+        game_window = GameWindow(root, columns=2, rows=2,title = "Game window")
 
         root.mainloop()  # Start the main loop for the new Tk instance
 
