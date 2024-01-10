@@ -10,6 +10,10 @@ class GameWindow:
     image_height = 152
     image_width = 109
     cheatsheet2 = cheatsheet()
+    button_font = ("Comic Sans MS", 12, "roman")
+    button_color = "#ee484c"
+    button_width = 15
+    button_height = 3
 
     def __init__(self, master, rows, columns,title):
 
@@ -21,7 +25,6 @@ class GameWindow:
         self.odgovori = []
         self.images = self.load_images()
         self.board = self.create_board()
-        print(self.board,"penis")
         self.revealed = [[False] * columns for _ in range(rows)]
         self.first_click = None
         self.second_click = None
@@ -198,7 +201,29 @@ class GameWindow:
                 if odgovor != "" and int(i) == int(odgovor):
                     found = True
                     if self.is_game_over():
-                        messagebox.showinfo("Memory Game", "Congratulations! You won!")
+                        if(self.rows == 2 and self.columns == 2):
+                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=3, cols=2: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
+                            next_level_button.grid(row=0, column=1, padx=10, sticky="w")
+                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=3, cols=2: self.on_button_hover(event, button, rows, cols))
+                            next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
+                        elif(self.rows == 3 and self.columns == 2):
+                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=4, cols=2: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
+                            next_level_button.grid(row=0, column=1, padx=10, sticky="w")
+                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=4, cols=2: self.on_button_hover(event, button, rows, cols))
+                            next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
+                        elif(self.rows == 4 and self.columns == 2):
+                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=4, cols=3: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
+                            next_level_button.grid(row=0, column=1, padx=10, sticky="w")
+                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=4, cols=3: self.on_button_hover(event, button, rows, cols))
+                            next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
+                        elif(self.rows == 4 and self.columns == 3):
+                            next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=4, cols=4: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
+                            next_level_button.grid(row=0, column=1, padx=10, sticky="w")
+                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=4, cols=4: self.on_button_hover(event, button, rows, cols))
+                            next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
+                        elif(self.rows == 4 and self.columns == 4):
+                            messagebox.showinfo("Bravo!")
+
                         self.master.quit()
         if not found:
             self.cover_tiles()
@@ -229,3 +254,15 @@ class GameWindow:
             if False in row:
                 return False
         return True
+    
+    def start_game(self, rows, cols):
+        # Destroy the current window (StartWindow)
+        self.master.destroy()
+        print(rows, cols)
+
+        # Create an instance of the BlankWindow class as a Toplevel window
+        root = tk.Tk()
+
+        game_window = GameWindow(root, columns=int(cols), rows=int(rows), title = "Game window")
+
+        root.mainloop()  # Start the main loop for the new Tk instance
