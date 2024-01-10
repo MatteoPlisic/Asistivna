@@ -9,10 +9,10 @@ import numpy as np
 #from StartWindow import StartWindow
 
 class GameWindow:
-    image_height = 152
+    image_height = 157
     image_width = 109
-    root_width = 800
-    root_height = 700
+    root_width = 850
+    root_height = 750
     cheatsheet2 = cheatsheet()
     button_font = ("Comic Sans MS", 12, "roman")
     button_color = "#ee484c"
@@ -40,6 +40,7 @@ class GameWindow:
         self.second_click = None
         self.allow_click = True
         master.title(title)
+        
         self.row_labels = [tk.Label(master, bg=master.cget("background")) for _ in range(rows)]
 
         self.button_height_without_image = 10
@@ -55,7 +56,7 @@ class GameWindow:
 
             for j in range(columns):
                 btn = tk.Button(self.row_labels[i], borderwidth=0, width=self.button_width_without_image, height=self.button_height_without_image, relief=tk.FLAT, command=lambda i=i, j=j: self.on_click(i, j))
-                btn.grid(row=0, column=j, padx=2, pady=2, ipadx=0, ipady=0,sticky="nsew")  # Dodano postavljanje razmaka između gumba
+                btn.grid(row=0, column=j, padx=5, pady=5, ipadx=0, ipady=0,sticky="nsew")  # Dodano postavljanje razmaka između gumba
                 self.buttons.append(btn)
 
                 btn.bind("<Enter>", lambda event, button=btn, row=i, col=j: self.on_button_hover(event, button, row, col))
@@ -151,12 +152,12 @@ class GameWindow:
                 file_path = os.path.join("odgovori", filename)
                 image = Image.open(file_path)
                 self.odgovori.append(filename)
-                imagetmp.append(image.resize((109,152)))
+                imagetmp.append(image.resize((109,157)))
                 #imagetmp.append(self.Resize_Image(image, (119, 162)))
                 file_path = os.path.join("pitanja", filename)
                 image = Image.open(file_path)
                 self.pitanja.append(filename)
-                imagetmp.append(image.resize((109,152)))
+                imagetmp.append(image.resize((109,157)))
                 #imagetmp.append(self.Resize_Image(image, (119, 162)))
                 
             images.append(imagetmp)
@@ -206,7 +207,7 @@ class GameWindow:
         folder_path = 'pitanja'
         for filename in self.pitanja:
             file_path = os.path.join(folder_path, filename)
-            y = Image.open(file_path).resize((109,152))
+            y = Image.open(file_path).resize((109,157))
             if image1 == y:
                 pitanje = filename
             if image2 == y:
@@ -214,7 +215,7 @@ class GameWindow:
         folder_path = 'odgovori'
         for filename in self.odgovori:
             file_path = os.path.join(folder_path, filename)
-            y = Image.open(file_path).resize((109,152))
+            y = Image.open(file_path).resize((109,157))
             print(filename)
             if image1 == y:
                 odgovor = filename
@@ -250,7 +251,7 @@ class GameWindow:
                             next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
 
 
-                        self.master.quit()
+                        #self.master.quit()
 
                 else:
                     try:
@@ -315,6 +316,23 @@ class GameWindow:
         x = (screen_width - self.root_width) // 2
         y = (screen_height - self.root_height) // 2
         root.geometry(f"{self.root_width}x{self.root_height}+{x}+{y}")
+
+        background_image_path = "background_image2.png"  # Replace with the path to your image file
+        original_image = Image.open(background_image_path)
+
+        # Resize the image to fit the window
+        resized_image = original_image.resize((self.root_width, self.root_height), Image.LANCZOS)
+
+        # Convert the resized image to PhotoImage
+        self.background_image = ImageTk.PhotoImage(resized_image)
+
+        # Create a Canvas widget with the image dimensions
+        self.canvas = tk.Canvas(root, width=self.root_width, height=self.root_height, bd=0, highlightthickness=0)
+        self.canvas.place(x=0, y=0)  # Cover the entire window
+
+        # Set the background image
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.background_image)
+
         
         game_window = GameWindow(root, columns=int(cols), rows=int(rows), title = "Game window")
 
