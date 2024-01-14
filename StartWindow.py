@@ -3,6 +3,7 @@ from LevelWindow import LevelWindow
 from BlankWindow import BlankWindow
 
 from GameWindow import GameWindow
+from PIL import Image, ImageTk
 
 import os
 import time
@@ -19,8 +20,8 @@ class StartWindow:
     button_font = ("Comic Sans MS", 14, "roman bold")
 
     # define sizes
-    root_width = 800
-    root_height = 700
+    root_width = 850
+    root_height = 750
     button_width = 30
     button_height = 7
 
@@ -31,6 +32,21 @@ class StartWindow:
 
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
+
+        background_image_path = "background_image2.png"  # Replace with the path to your image file
+        original_image = Image.open(background_image_path)
+        # Resize the image to fit the Canvas
+        resized_image = original_image.resize((self.root_width, self.root_height), Image.LANCZOS)
+
+        # Convert the resized image to PhotoImage
+        self.background_image = ImageTk.PhotoImage(resized_image)
+
+        # Create a Canvas widget with the image dimensions
+        self.canvas = tk.Canvas(root, width=self.root_width, height=self.root_height, bd=0, highlightthickness=0)
+        self.canvas.place(x=0, y=0)  # Cover the entire window
+
+        # Set the background image
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.background_image)
 
         x = (screen_width - self.root_width) // 2
         y = (screen_height - self.root_height) // 2
@@ -72,6 +88,22 @@ class StartWindow:
         y = (screen_height - self.root_height) // 2
         root.geometry(f"{self.root_width}x{self.root_height}+{x}+{y}")
         
+        background_image_path = "background_image2.png"  # Replace with the path to your image file
+        original_image = Image.open(background_image_path)
+
+        # Resize the image to fit the window
+        resized_image = original_image.resize((self.root_width, self.root_height), Image.LANCZOS)
+
+        # Convert the resized image to PhotoImage
+        self.background_image = ImageTk.PhotoImage(resized_image)
+
+        # Create a Canvas widget with the image dimensions
+        self.canvas = tk.Canvas(root, width=self.root_width, height=self.root_height, bd=0, highlightthickness=0)
+        self.canvas.place(x=0, y=0)  # Cover the entire window
+
+        # Set the background image
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.background_image)
+
         game_window = GameWindow(root, columns=2, rows=2, title = "Game window")
 
         root.mainloop()  # Start the main loop for the new Tk instance
@@ -81,6 +113,12 @@ class StartWindow:
         # Check the flag before creating the level window
         if self.should_create_level_window:
             root = tk.Tk()
+            screen_width = root.winfo_screenwidth()
+            screen_height = root.winfo_screenheight()
+            x = (screen_width - self.root_width) // 2
+            y = (screen_height - self.root_height) // 2
+            root.geometry(f"{self.root_width}x{self.root_height}+{x}+{y}")
+        
             # Set the flag to False to prevent the small Tkinter window from appearing
             self.should_create_level_window = False
 
