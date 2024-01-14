@@ -63,7 +63,7 @@ class GameWindow:
 
                 button_width = btn.winfo_reqwidth()
                 button_height = btn.winfo_reqheight()
-                print(f"Button {i}, {j} dimensions: {button_width} x {button_height}")
+                #print(f"Button {i}, {j} dimensions: {button_width} x {button_height}")
 
         self.master.update_idletasks()  # Force update before querying size
             
@@ -76,7 +76,7 @@ class GameWindow:
             self.row_labels[i].place(x=(self.root_width - self.row_labels[1].winfo_reqwidth())/2, y=self.ys[i])
         
     def on_button_hover(self, event, button, row, col, btnType):
-        print("on_button_hover; ", row, col)
+        #print("on_button_hover; ", row, col)
         global hover_start_time
         hover_start_time = time.time()
 
@@ -170,7 +170,7 @@ class GameWindow:
                 
             images.append(imagetmp)
         ##images[1][1].show()
-        print(self.rows,self.columns)
+        #print(self.rows,self.columns)
 
         flattened_images = [image for row in images for image in row]
 
@@ -193,7 +193,7 @@ class GameWindow:
         if not self.revealed[row][col] and self.allow_click:
             self.revealed[row][col] = True
             tk_image = ImageTk.PhotoImage(self.images[row][col])
-            print(self.images[row][col])
+            #print(self.images[row][col])
             self.buttons[row * self.columns + col].config(image=tk_image,height=tk_image.height(),width=tk_image.width())
             self.buttons[row * self.columns + col].image = tk_image
 
@@ -224,7 +224,7 @@ class GameWindow:
         for filename in self.odgovori:
             file_path = os.path.join(folder_path, filename)
             y = Image.open(file_path).resize((109,157))
-            print(filename)
+            #print(filename)
             if image1 == y:
                 odgovor = filename
             if image2 == y:
@@ -240,12 +240,12 @@ class GameWindow:
 
 
                 if int(i) == int(odgovor):
-                    print(i,odgovor)
+                    #print(i,odgovor)
 
                     found = True
                     if self.is_game_over():
                         index = self.level_sizes.index((self.rows, self.columns))
-                        print("index=", index)
+                       # print("index=", index)
                         if index == len(self.level_sizes) - 1:
                             main_menu_button = tk.Button(self.master, text=f"Povratak na izbornik", command=self.return_to_menu, font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
                             main_menu_button.grid(row=0, column=1, padx=10, sticky="w")
@@ -265,12 +265,12 @@ class GameWindow:
                     try:
                         if tocni_odgovor == Image.open(file_path+str(i)+".jpg"):
                             found = True
-                            print(pitanje,i)
+                            #print(pitanje,i)
                             if self.is_game_over():
                                 #messagebox.showinfo("Memory Game", "Congratulations! You won!")
                                 self.master.quit()
                     except:
-                        print("error")
+                        #print("error")
                         continue
 
 
@@ -313,7 +313,7 @@ class GameWindow:
     def start_game(self, rows, cols):
         # Destroy the current window (StartWindow)
         self.master.destroy()
-        print(rows, cols)
+        #print(rows, cols)
 
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()

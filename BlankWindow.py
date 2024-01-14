@@ -48,7 +48,7 @@ class BlankWindow:
     def tile_clicked(self, text, number, button):
         # Update the button text to show the number after clicking
         button["text"] = f"{number}"
-        print(f"Tile Clicked! Text: {text}, Number: {number}")
+        #print(f"Tile Clicked! Text: {text}, Number: {number}")
 
     def mouse_enter(self, event, button):
         # Set a callback to be executed after 2000 milliseconds (2 seconds)
@@ -61,5 +61,5 @@ class BlankWindow:
     def simulate_click(self, button):
         # Simulate a click when the button has been hovered for more than 2 seconds
         button.event_generate("<Button-1>")
-        print("Clicked tile ")
+        #print("Clicked tile ")
 

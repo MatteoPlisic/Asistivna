@@ -56,7 +56,7 @@ class LevelWindow:
     def start_game(self, rows, cols):
         # Destroy the current window (StartWindow)
         self.master.destroy()
-        print(rows, cols)
+        #print(rows, cols)
 
         # Create an instance of the BlankWindow class as a Toplevel window
         root = tk.Tk()
