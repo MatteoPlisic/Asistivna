@@ -59,7 +59,7 @@ class GameWindow:
                 btn.grid(row=0, column=j, padx=5, pady=5, ipadx=0, ipady=0,sticky="nsew")  # Dodano postavljanje razmaka između gumba
                 self.buttons.append(btn)
 
-                btn.bind("<Enter>", lambda event, button=btn, row=i, col=j: self.on_button_hover(event, button, row, col))
+                btn.bind("<Enter>", lambda event, button=btn, row=i, col=j: self.on_button_hover(event, button, row, col, btnType="grid"))
 
                 button_width = btn.winfo_reqwidth()
                 button_height = btn.winfo_reqheight()
@@ -75,13 +75,14 @@ class GameWindow:
         for i in range(rows):
             self.row_labels[i].place(x=(self.root_width - self.row_labels[1].winfo_reqwidth())/2, y=self.ys[i])
         
-    def on_button_hover(self, event, button, row, col):
+    def on_button_hover(self, event, button, row, col, btnType):
+        print("on_button_hover; ", row, col)
         global hover_start_time
         hover_start_time = time.time()
 
-        self.check_hover(button, row, col)
+        self.check_hover(button, row, col, btnType)
 
-    def check_hover(self, button, row, col):
+    def check_hover(self, button, row, col, btnType):
         current_mouse_x = self.master.winfo_pointerx() - self.master.winfo_rootx()
         current_mouse_y = self.master.winfo_pointery() - self.master.winfo_rooty()
 
@@ -100,13 +101,20 @@ class GameWindow:
         ):
             elapsed_time = time.time() - hover_start_time
             if elapsed_time >= 1:  # 1 second
-                self.on_click(row, col)
+                if btnType == "grid":
+                    self.on_click(row, col)
+                elif btnType == "menu":
+                    self.return_to_menu()
+                elif btnType == "level":
+                    index = self.level_sizes.index((self.rows, self.columns))
+                    r, c = self.level_sizes[index + 1]
+                    self.start_game(r, c)
                 return
         else:
             # Stop checking if the mouse is no longer over the button
             return
 
-        button.after(100, lambda: self.check_hover(button, row, col))  # Check every 100 milliseconds
+        button.after(100, lambda: self.check_hover(button, row, col, btnType))  # Check every 100 milliseconds
 
     def Resize_Image(self, image, maxsize):
         r1 = image.size[0] / maxsize[0]  # width ratio
@@ -241,13 +249,13 @@ class GameWindow:
                         if index == len(self.level_sizes) - 1:
                             main_menu_button = tk.Button(self.master, text=f"Povratak na izbornik", command=self.return_to_menu, font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
                             main_menu_button.grid(row=0, column=1, padx=10, sticky="w")
-                            main_menu_button.bind("<Enter>", lambda event, button=main_menu_button, rows=4, cols=3: self.on_button_hover(event, button, rows, cols))
+                            main_menu_button.bind("<Enter>", lambda event, button=main_menu_button, rows=4, cols=3: self.on_button_hover(event, button, rows, cols, btnType="menu"))
                             main_menu_button.bind("<Leave>", lambda event: main_menu_button.config(bg=self.button_color))
                         else: 
                             r, c = self.level_sizes[index + 1]
                             next_level_button = tk.Button(self.master, text=f"Sljedeći level", command=lambda rows=r, cols=c: self.start_game(rows, cols), font=self.button_font, bg=self.button_color, width=self.button_width, height=self.button_height)
                             next_level_button.grid(row=0, column=1, padx=10, sticky="w")
-                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=r, cols=c: self.on_button_hover(event, button, rows, cols))
+                            next_level_button.bind("<Enter>", lambda event, button=next_level_button, rows=r, cols=c: self.on_button_hover(event, button, rows, cols, btnType="level"))
                             next_level_button.bind("<Leave>", lambda event: next_level_button.config(bg=self.button_color))
 
 
