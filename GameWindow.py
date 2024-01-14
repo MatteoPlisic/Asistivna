@@ -259,7 +259,7 @@ class GameWindow:
                             found = True
                             print(pitanje,i)
                             if self.is_game_over():
-                                messagebox.showinfo("Memory Game", "Congratulations! You won!")
+                                #messagebox.showinfo("Memory Game", "Congratulations! You won!")
                                 self.master.quit()
                     except:
                         print("error")
